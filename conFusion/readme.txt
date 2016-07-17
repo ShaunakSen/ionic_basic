@@ -274,7 +274,7 @@ It shows preview both in ios and android mode
 
 _____________________
 
-Go to tamplates/aboutus
+Go to templates/aboutus
 
 <ion-view view-title="Browse">
   <ion-content>
@@ -295,6 +295,122 @@ We change it to:
 </ion-view>
 
 Similarly we edit the remaining templates
+
+Ionic CSS Components
+________________________________
+
+ionic provides a no of css classes that provides various UI components
+
+Ionic Card Class
+
+-We will use this
+
+Now we want to reconstruct our spa into an ionic app
+_________________________________________________________
+
+1. configure services
+2. configure controllers
+3. Redesign the templates
+
+Services
+___________
+
+Paste in the services.js file which we developed earlier into www/js/
+Updating this file:
+
+angular.module('conFusion.services', ['ngResource'])
+
+Also right now base url is: .constant("baseURL","http://localhost:3000/")
+
+When we deploy this app to server we need to give ip address of server here
+
+Also we inject ngResource ..
+
+
+In index.html:
+We have
+<script src="lib/ionic/js/ionic.bundle.js"></script>
+Ionic bundle doe not include ngResource..So we need to explicitly include this
+
+<script src="lib/ionic/js/angular/angular-resource.js"></script>
+
+We include angular-resource
+
+What does ionic bundle include??
+/*!
+* ionic.bundle.js is a concatenation of:
+* ionic.js, angular.js, angular-animate.js,
+* angular-sanitize.js, angular-ui-router.js,
+* and ionic-angular.js
+*/
+
+include services.js
+
+<script src="js/services.js"></script>
+
+In app.js
+
+We need to inject services module into angular module
+In app.js:
+
+angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.services'])
+
+Controllers
+______________
+
+In controllers.js:
+
+It contains a controller called AppCtrl.. Leave it as it is
+
+It also has controllers: PlaylistsCtrl and PlaylistCtrl
+
+Remove these
+
+Replace with the controller code developed in the previous course
+
+Let us now work on the templates
+_______________________________________
+
+
+Home.html:
+
+To make this work in app.js:
+
+.state('app.home', {
+  url: '/home',
+  views: {
+    'mainContent': {
+      templateUrl: 'templates/home.html',
+      controller: 'IndexController'
+    }
+  }
+})
+
+In IndexController:
+
+.controller('IndexController', ['$scope', 'baseURL', 'menuFactory', 'corporateFactory',
+    function ($scope, baseURL, menuFactory, corporateFactory) {
+
+      /*$scope.dish = {};*/
+      $scope.baseURL = baseURL;
+      ...
+      ...
+
+We want our images to be downloaded from server
+
+So we need baseUrl
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

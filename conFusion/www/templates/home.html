@@ -1,5 +1,58 @@
 <ion-view view-title="Restorante con Fusion">
   <ion-content>
-    <h1>Restorante Con Fusion</h1>
+    <div class="card">
+      <div class="item item-divider">
+        Our Lip Smacking Culinary Creations
+        <span class="badge badge-assertive">{{dish.label}}</span>
+      </div>
+      <div class="item item-thumbnail-left item-text-wrap">
+        <img ng-src="{{baseURL + dish.image}}" alt="">
+        <h2>{{dish.name}}
+          <span class="badge">{{dish.price | currency}}</span>
+        </h2>
+        <p>{{dish.description}}</p>
+      </div>
+    </div>
+
+    <div class="card" ng-repeat="promotion in promotions">
+      <div class="item item-divider">
+        This Month's Promotions
+        <span class="badge badge-assertive">{{promotion.label}}</span>
+      </div>
+      <div class="item item-thumbnail-left item-text-wrap">
+        <img ng-src="{{baseURL + promotion.image}}" alt="">
+        <h2>{{promotion.name}}
+          <span class="badge">{{promotion.price | currency}}</span>
+        </h2>
+        <p>{{promotion.description}}</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="item item-divider">
+        Meet Our Culinary Specialists
+      </div>
+      <div class="item item-thumbnail-left item-text-wrap">
+        <img ng-src="{{baseURL + executiveChief.image}}" alt="">
+        <h2>{{executiveChief.name}}</h2>
+        <h4>{{executiveChief.designation}}</h4>
+        <p>{{executiveChief.description}}</p>
+      </div>
+    </div>
+    <div class="list card">
+
+      <div class="item item-avatar">
+        <img ng-src="{{baseURL + executiveChief.image}}" alt="">
+        <h2>{{executiveChief.name}}</h2>
+        <p>{{executiveChief.designation}}</p>
+      </div>
+
+      <div class="item item-body">
+        <p>
+          {{executiveChief.description}}
+        </p>
+      </div>
+    </div>
+
   </ion-content>
 </ion-view>
