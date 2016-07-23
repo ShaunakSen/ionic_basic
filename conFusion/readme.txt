@@ -400,8 +400,165 @@ We want our images to be downloaded from server
 
 So we need baseUrl
 
+In home.html we simply display the data using help of ionic's built in classes
+and layouts
+We use the card layout here
 
 
+Ionic Components Part 2
+______________________________
+
+We have lists class and also <ion-list>  directive
+
+The directive supports addnl features for interaction like swiping, dragging to reorder, adding delete buttons
+
+<ion-list>
+  <ion-item></ion-item>
+</ion-list>
+
+Similarly we have tabs class
+and also directive
+
+
+Ionic Supports a Grid
+
+It uses CSS Flexbox
+
+
+row
+  col
+
+we can include any no of cols in row
+each will get equal width by default
+
+we can explicitly define the proportion of screen width that a col should take up
+col-50
+This col takes half the width
+
+col-offset-x where x is a percentage
+
+Vertical alignment: col-top, col-center, col-bottom
+
+If we apply row-top all cols within that row will be alligned to top
+
+responsive-sm, responsive-md, responsive-md is used for responsiveness
+
+But note here u r designing for mobile.. So dont add too many cols
+
+
+Working on the Menu View
+____________________________
+
+Updating MenuController
+
+Inject baseUrl
+controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function ($scope, menuFactory, baseURL) {
+
+$scope.baseURL = baseURL;
+....
+....
+}
+
+Same for dishDetailController
+
+Configure states in app.js
+
+
+state('app.menu', {
+  url: '/menu',
+  views: {
+    'mainContent': {
+      templateUrl: 'templates/menu.html',
+      controller: 'MenuController'
+    }
+  }
+})
+
+.state('app.dishdetails', {
+  url: '/menu/:id',
+  views: {
+    'mainContent': {
+      templateUrl: 'templates/dishdetail.html',
+      controller: 'dishDetailController'
+    }
+  }
+});
+
+In menu.html we have:
+<ion-view view-title="Menu">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="dish in dishes" href="#/app/menu/{{dish.id}}">
+        {{dish.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
+
+
+We change it:
+
+<ion-view view-title="Menu">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="dish in dishes | filter:{category: filtText}"
+                href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
+        <img ng-src="{{baseURL + dish.image}}">
+        <h2>{{dish.name}}</h2>
+        <span>{{dish.price | currency}}</span>
+        <span class="badge badge-assertive">{{dish.label}}</span>
+        <p>{{dish.description}}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
+
+
+
+Note: here the description shows only a single line. To make it show all add a class of item-text-wrap to
+<ion-item>. Here we want to make separate view for dish detail so we dont do that
+
+Setting up the tabs
+
+
+<div class="tabs-striped tabs-color-royal">
+    <ul class="tabs">
+      <li ng-class="{active:isSelected(1)}" class="tab-item">
+        <a ng-click="select(1)">The Menu</a>
+      </li>
+      <li ng-class="{active:isSelected(2)}" class="tab-item">
+        <a ng-click="select(2)">Appetizers</a>
+      </li>
+      <li ng-class="{active:isSelected(3)}" class="tab-item">
+        <a ng-click="select(3)">Mains</a>
+      </li>
+      <li ng-class="{active:isSelected(4)}" class="tab-item">
+        <a ng-click="select(4)">Desserts</a>
+      </li>
+    </ul>
+</div>
+
+
+DishDetails View
+_____________________
+
+go to dishdetail.html
+
+<ion-view view-title="Dish Detais">
+  <ion-content>
+    <div class="card">
+      <div class="item item-body item-text-wrap">
+        <img class="full-image" ng-src="{{baseURL + dish.image}}">
+        <h2>
+          {{dish.name}}
+          <span style="font-size: 0.8em">{{dish.price | currency}}</span>
+          <span class="badge badge-assertive">{{dish.label}}</span>
+        </h2>
+        <p>{{dish.description}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
 
 
 

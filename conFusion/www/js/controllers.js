@@ -40,8 +40,10 @@ angular.module('conFusion.controllers', [])
       }, 1000);
     };
   })
-  .controller('MenuController', ['$scope', 'menuFactory', function ($scope, menuFactory) {
+  .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function ($scope, menuFactory, baseURL) {
+
     console.log('here');
+    $scope.baseURL = baseURL;
     $scope.tab = 1;
     $scope.filtText = '';
     $scope.showDetails = true;
@@ -154,9 +156,10 @@ angular.module('conFusion.controllers', [])
     }
 
   }])
-  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory',
-    function ($scope, $stateParams, menuFactory) {
+  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL',
+    function ($scope, $stateParams, menuFactory, baseURL) {
 
+      $scope.baseURL = baseURL;
       $scope.search = '';
       $scope.dish = {};
       $scope.showDish = false;
@@ -288,7 +291,7 @@ angular.module('conFusion.controllers', [])
           //success function
           $scope.showPromotion = true;
           $scope.promotions = response
-          
+
         },
         function (response) {
           //error function
