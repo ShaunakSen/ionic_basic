@@ -561,6 +561,149 @@ go to dishdetail.html
 </ion-view>
 
 
+Similarly we make aboutus and contactus views also
+
+
+Ionic Modals and Forms
+____________________________
+
+
+Ionic modals take up the entire screen space
+
+Ionic Forms are quite similar to bootstrap forms
+
+Display and hiding of modals are controlled by controllers
+
+Constructing a modal:
+
+1. Design template structure
+2. Code showing and hiding functions in the controller
+
+go to login.html. This is a modal
+
+<ion-modal-view>.. This is used to create modal
+
+<ion-header-bar> contains title and close button
+
+<ion-content> contains the main content
+
+<ion-header-bar>
+  <h1 class="title">Login</h1>
+  <div class="buttons">
+    <button class="button button-clear" ng-click="closeLogin()">Close</button>
+  </div>
+</ion-header-bar>
+
+closeLogin()  function should be there in controller
+
+Let us look at content now
+
+<form ng-submit="doLogin()">
+
+doLogin() function should be there in controller
+
+Form elements are displayed as a set of list items
+
+<input type="text" ng-model="loginData.username">
+
+This implies that we should have a js object loginData and it should have a property of username and it is tied in through 2 way
+data binding to this input
+
+Similar for password
+
+Lets look at js code now
+
+Go to AppCtrl controller
+
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+...
+}
+
+Note $ionicModal and $timeout are services injected into this controller
+
+$scope.loginData = {};
+$scope.reservation = {};
+
+We will use another form later. $scope.reservation = {}; is for that
+
+Creating Modal:
+
+$ionicModal.fromTemplateUrl('templates/login.html', {
+  scope: $scope
+}).then(function (modal) {
+  $scope.modal = modal;
+});
+
+Note after the above function we have the modal variable  in the scope
+
+So we can make use of this modal var to hide or show modal
+
+$scope.closeLogin = function () {
+  $scope.modal.hide();
+};
+
+
+Now we know this login modal opens on clicking login option in the sidebar
+
+Lets look at sidebar.html
+
+<ion-item menu-close ng-click="login()">
+  Login
+</ion-item>
+
+This causes the modal to show
+
+Note also:
+.state('app', {
+  url: '/app',
+  abstract: true,
+  templateUrl: 'templates/sidebar.html',
+  controller: 'AppCtrl'
+})
+
+
+sidebar.html is under AppCtrl
+
+So all modal code is written in AppCtrl
+
+
+Let us now create a new modal and form !!
+
+We will add functionality so that a logged in user can reserve table
+
+In sidebar.html
+<ion-item menu-close ng-click="reserve()">
+  Reserve Table
+</ion-item>
+
+
+Lets create template for reserve table
+
+Create reserve.html in templates
+
+Look at code in reserve.html for this
+
+
+Now we need to add the appropriate code in controller
+
+$ionicModal.fromTemplateUrl("templates/reserve.html", {
+  scope: $scope
+}).then(function (modal) {
+  $scope.reserveForm = modal;
+})
+
+closeReserve Function:
+
+$scope.closeReserve = function () {
+  $scope.reserveForm.hide();
+};
+
+
+
+
+
+
+
 
 
 
