@@ -383,10 +383,16 @@ angular.module('conFusion.controllers', [])
       }
     )
   }])
-  .controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
-    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+  .controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL',
+    '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
       $scope.baseURL = baseURL;
       $scope.shouldShowDelete = false; //DEFAULT
+
+      $ionicLoading.show({
+        template: '<ion-spinner></ion-spinner> Loading ...'
+      });
+
       $scope.favorites = favoriteFactory.getFavorites();
       // RETURNS A OBJECT ARRAY CONTAINING ID OF FAVORITE ITEMS
 
@@ -396,11 +402,16 @@ angular.module('conFusion.controllers', [])
         function (response) {
           //success function
           $scope.dishes = response;
-          $scope.showMenu = true;
+          $timeout(function () {
+            $ionicLoading.hide();
+          }, 1000)
         },
         function (response) {
           //error function
           $scope.message = "Error: " + response.status + " " + response.statusText;
+          $timeout(function () {
+            $ionicLoading.hide();
+          }, 1000)
         }
       );
       $scope.toggleDelete = function () {
@@ -408,7 +419,17 @@ angular.module('conFusion.controllers', [])
       };
 
       $scope.deleteFavorite = function (index) {
-        favoriteFactory.deleteFromFavorites(index);
+
+        var confirmPopup = $ionicPopup.confirm({
+          title: "Confirm Delete",
+          template: "Are You Sure You Want To Delete This Item? "
+        });
+
+        confirmPopup.then(function (res) {
+          if(res){
+            favoriteFactory.deleteFromFavorites(index);
+          }
+        });
         $scope.shouldShowDelete = false;
       };
 

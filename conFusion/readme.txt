@@ -1001,6 +1001,91 @@ Now in sidebar.html
   My Favorites
 </ion-item>
 
+_________________________________________________________
+
+
+Popup, Popover, Action sheets and Loading
+____________________________________________
+
+All of these involve overlaying content on top of the screen
+
+If u have a popup user is expected to interact with it
+if u have a loading msg, until loading msg is taken off, user cant interact with screen
+
+Show and hide all these uses javascript
+
+Gestures
+__________
+
+on-hold, on-tap, on-double-tap, on-touch, on-release, on-drag-up,
+on-drag-right, on-swipe-left, on-swipe-right ....
+
+Invoke a function to handle gestures
+
+<ion-item on-swipe-left="deleteFavorite(dish.id)">
+
+Now what we want to do:
+
+1.On clicking My Favorites data is fetched from server. We want to add a loading spinner while
+that happens
+2.On Clicking Delete option we want to add Confirmation PopOver
+3.On swiping left I want to delete item
+
+
+For 2.
+
+In FavoritesController:
+
+Inject $ionicPopup
+
+var confirmPopup = $ionicPopup.confirm({
+  title: "Confirm Delete",
+  template: "Are You Sure You Want To Delete This Item? "
+});
+
+confirmPopup.then(function (res) {
+  if(res){
+    favoriteFactory.deleteFromFavorites(index);
+  }
+});
+$scope.shouldShowDelete = false;
+
+
+For 1.
+
+Inject '$ionicLoading', '$timeout' as DI
+
+$ionicLoading.show({
+  template: '<ion-spinner></ion-spinner> Loading ...'
+});
+
+Now Loading will finish in getDishes function i.e the function where data is fetched from server
+
+$scope.dishes = menuFactory.getDishes().query(
+  function (response) {
+    //success function
+    $scope.dishes = response;
+    $timeout(function () {
+      $ionicLoading.hide();
+    }, 1000)
+  },
+  function (response) {
+    //error function
+    $scope.message = "Error: " + response.status + " " + response.statusText;
+    $timeout(function () {
+      $ionicLoading.hide();
+    }, 1000)
+  }
+);
+
+We simulate delay using $timeout
+
+3.
+<ion-item ng-repeat="dish in dishes | favoriteFilter: favorites"
+  on-swipe-left="deleteFavorite(dish.id)"
+  href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
+
+
 
 
 
