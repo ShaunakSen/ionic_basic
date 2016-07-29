@@ -792,14 +792,14 @@ We want to keep track of favorites using a factory called favoriteFactory
 
 So in controllers:
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionListDelegate',
-    function ($scope, menuFactory, favoriteFactory, baseURL, $ionListDelegate) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
       ...
 
       $scope.addFavorite = function (index) {
         console.log("Index is ", index);
         favoriteFactory.addToFavorite(index);
-        $ionListDelegate.closeOptionButtons();
+        $ionicListDelegate.closeOptionButtons();
       };
     }
 
@@ -826,7 +826,132 @@ In services.js:
 
 
 
+Now add My Favorites To Sidebar Menu
+When My Favorites is clicked it should show list of favs
+Also we should be able to delete a favorite
 
+
+In favoriteFactory
+
+favFac.getFavorites = function () {
+  return favorites;
+};
+
+Creating deleteFromFavorites method:
+
+favFac.deleteFromFavorites = function (index) {
+  for (var i = 0; i < favorites.length; ++i) {
+    if (favorites[i].id == index) {
+      favorites.splice(i, 1);
+    }
+  }
+};
+
+Now create a new template for displaying favorites: favorites.html
+
+<ion-view view-title="My Favorites">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="dish in dishes | favoriteFilter: favorites"
+                href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
+        <img ng-src="{{baseURL + dish.image}}">
+        <h2>{{dish.name}}
+          <span style="font-size: 0.8em">{{dish.price | currency}}</span>
+          <span class="badge badge-assertive">{{dish.label}}</span>
+        </h2>
+        <p>{{dish.description}}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
+
+Notice the line: <ion-item ng-repeat="dish in dishes | favoriteFilter: favorites"
+
+
+favoriteFilter is our custom filter and it takes in an object favorites as parameter
+
+We get this favorites object from getFavorites method in favoriteFactory
+
+Now we need to add option for delete
+
+<ion-delete-button class="ion-minus-circled" ng-click="deleteFavorite(dish.id)"></ion-delete-button>
+
+Now we wanna show this delete button only when reqd
+
+For this we need to add another attr to ion-list
+
+<ion-list show-delete="shouldShowDelete">
+
+When shouldShowDelete is true the delete option will be shown
+
+Now we want to add icons to header bar
+This is done by ion-nav-buttons
+
+<ion-nav-buttons side="secondary">
+  <div class="buttons">
+      <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDelete()"></button>
+  </div>
+</ion-nav-buttons>
+
+secondary: buttons displayed in RHS of header bar
+
+toggleDelete function should be implemented in our controller
+
+We create a new controller called FavoritesController
+
+In app.js
+
+.state('app.favorites', {
+  url: '/favorites',
+  views: {
+    'mainContent': {
+      templateUrl: 'templates/favorites.html',
+      controller: 'FavoritesController'
+    }
+  }
+})
+
+Now in controllers.js we need to implement FavoritesController
+
+
+Setting up the controller:
+
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+
+}]);
+
+In FavoritesController:
+
+$scope.baseURL = baseURL;
+$scope.shouldShowDelete = false; //DEFAULT
+$scope.favorites = favoriteFactory.getFavorites();
+// RETURNS A OBJECT ARRAY CONTAINING ID OF FAVORITE ITEMS
+
+// FETCH LIST OF DISHES
+
+$scope.dishes = menuFactory.getDishes().query(
+  function (response) {
+    //success function
+    $scope.dishes = response;
+    $scope.showMenu = true;
+  },
+  function (response) {
+    //error function
+    $scope.message = "Error: " + response.status + " " + response.statusText;
+  }
+  $scope.toggleDelete = function () {
+    $scope.shouldShowDelete = !$scope.shouldShowDelete;
+  };
+
+  $scope.deleteFavorite = function (index) {
+    favoriteFactory.deleteFromFavorites(index);
+    $scope.shouldShowDelete = false;
+  };
+);
+
+
+Now for the filter
 
 
 

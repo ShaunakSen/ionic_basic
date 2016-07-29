@@ -382,4 +382,34 @@ angular.module('conFusion.controllers', [])
         $scope.message = "Error: " + response.status + " " + response.statusText;
       }
     )
-  }]);
+  }])
+  .controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+      $scope.baseURL = baseURL;
+      $scope.shouldShowDelete = false; //DEFAULT
+      $scope.favorites = favoriteFactory.getFavorites();
+      // RETURNS A OBJECT ARRAY CONTAINING ID OF FAVORITE ITEMS
+
+      // FETCH LIST OF DISHES
+
+      $scope.dishes = menuFactory.getDishes().query(
+        function (response) {
+          //success function
+          $scope.dishes = response;
+          $scope.showMenu = true;
+        },
+        function (response) {
+          //error function
+          $scope.message = "Error: " + response.status + " " + response.statusText;
+        }
+      );
+      $scope.toggleDelete = function () {
+        $scope.shouldShowDelete = !$scope.shouldShowDelete;
+      };
+
+      $scope.deleteFavorite = function (index) {
+        favoriteFactory.deleteFromFavorites(index);
+        $scope.shouldShowDelete = false;
+      };
+
+    }]);
