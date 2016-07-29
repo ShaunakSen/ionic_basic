@@ -699,6 +699,130 @@ $scope.closeReserve = function () {
 };
 
 
+doReserve function:
+
+$scope.doReserve = function () {
+  console.log("Doing reservation...", $scope.reservation);
+
+  //time delay
+
+  $timeout(function () {
+    $scope.closeReserve();
+  }, 1000);
+};
+
+Ionic Lists
+_____________________
+
+
+Ionic provides enhanced lists with advanced features like:
+
+Delete button, Reorder Button, Option button
+
+For eg: there is a directive: <ion-option-button>
+This shows a button when a list item is swiped to the left
+
+<ion-list>
+  <ion-item ng-repeat="">
+  ...
+    <ion-option-button class="button-assertive icon ion-plus-circled"
+    ng-click="addFavorite({{dish.id}})">
+    </ion-option-button>
+  </ion-item>
+
+...
+
+</ion-list>
+
+
+Similarly there is a directive <ion-delete-button>
+
+This directive when included in <ion-item> causes delete button to be shown on left edge when enabled
+But how do we enable this delete button to be shown??
+
+For this the ion-list should have attr show-delete
+
+
+<ion-list show-delete="shouldShowDelete">
+  <ion-item ng-repeat="">
+  ...
+    <ion-delete-button class="ion-minus-circled"
+    ng-click="deleteFav({{dish.id}})">
+    </ion-delete-button>
+  </ion-item>
+
+...
+
+</ion-list>
+
+Similar approach can be used to implement a reorder button
+
+Angular also supports an additional repeat called collection-repeat
+
+How does it differ from ng-repeat?
+
+In ng-repeat if we have a collection of 2000 items it will display them
+But our screen has capacity to show only 10 items
+So it is pointless to display the remaining 1990 items
+collection-repeat renders into DOM as many items as are currently visible
+
+
+Angular Custom Filters
+_____________________________
+
+these can be written as a factory
+
+
+
+Implementations
+____________________
+
+
+First we want an option button when list is swiped to the left
+
+In menu.html
+
+<ion-option-button class="button-assertive icon ion-plus-circled"
+ng-click="addFavorite(dish.id)"></ion-option-button>
+
+
+We need to implement this addFavorite function in MenuController
+
+We want to keep track of favorites using a factory called favoriteFactory
+
+So in controllers:
+
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionListDelegate',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionListDelegate) {
+      ...
+
+      $scope.addFavorite = function (index) {
+        console.log("Index is ", index);
+        favoriteFactory.addToFavorite(index);
+        $ionListDelegate.closeOptionButtons();
+      };
+    }
+
+Now we have to implement the favoriteFactory
+
+In services.js:
+
+.factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+    var favFac = {};
+    var favorites = [];
+
+    favFac.addToFavorites = function (index) {
+      // CHECK IF ALREADY IN FAVORITES
+      for (var i = 0; i < favorites.length; ++i) {
+        if (favorites[i].id == index) {
+          return;
+        }
+      }
+      favorites.push({id: index});
+    };
+
+    return favFac;
+  }]);
 
 
 

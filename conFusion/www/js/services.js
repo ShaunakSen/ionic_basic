@@ -75,7 +75,6 @@ angular.module('conFusion.services', ['ngResource'])
     // the other named getLeader(index)
     // Remember this is a factory not a service
 
-
   }])
   .factory('feedbackFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
     var feedbackfac = {};
@@ -84,4 +83,24 @@ angular.module('conFusion.services', ['ngResource'])
     };
     return feedbackfac;
 
+  }])
+  .factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+    var favFac = {};
+    var favorites = [];
+
+    favFac.addToFavorites = function (index) {
+      // CHECK IF ALREADY IN FAVORITES
+      for (var i = 0; i < favorites.length; ++i) {
+        if (favorites[i].id == index) {
+          return;
+        }
+      }
+      favorites.push({id: index});
+    };
+    
+    favFac.getFavorites = function () {
+      return favorites;
+    };
+
+    return favFac;
   }]);

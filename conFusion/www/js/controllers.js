@@ -69,65 +69,74 @@ angular.module('conFusion.controllers', [])
 
 
   })
-  .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function ($scope, menuFactory, baseURL) {
+  .controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
 
-    console.log('here');
-    $scope.baseURL = baseURL;
-    $scope.tab = 1;
-    $scope.filtText = '';
-    $scope.showDetails = true;
-    $scope.showMenu = false;
-    $scope.message = 'Loading...';
+      console.log('here');
+      $scope.baseURL = baseURL;
+      $scope.tab = 1;
+      $scope.filtText = '';
+      $scope.showDetails = true;
+      $scope.showMenu = false;
+      $scope.message = 'Loading...';
 
-    $scope.toggleDetails = function () {
-      $scope.showDetails = !$scope.showDetails
-    };
+      $scope.toggleDetails = function () {
+        $scope.showDetails = !$scope.showDetails
+      };
 
-    /*$scope.dishes = {};
-     menuFactory.getDishes().then(
-     function (response) {
-     $scope.dishes = response.data;
-     $scope.showMenu = true;
-     // menu is now ready to be displayed
-     },
-     function (response) {
-     $scope.message = "Error: " + response.status + " " + response.statusText;
-     }
-     );*/
+      /*$scope.dishes = {};
+       menuFactory.getDishes().then(
+       function (response) {
+       $scope.dishes = response.data;
+       $scope.showMenu = true;
+       // menu is now ready to be displayed
+       },
+       function (response) {
+       $scope.message = "Error: " + response.status + " " + response.statusText;
+       }
+       );*/
 
-    $scope.dishes = menuFactory.getDishes().query(
-      function (response) {
-        //success function
-        $scope.dishes = response;
-        $scope.showMenu = true;
-      },
-      function (response) {
-        //error function
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
+      $scope.dishes = menuFactory.getDishes().query(
+        function (response) {
+          //success function
+          $scope.dishes = response;
+          $scope.showMenu = true;
+        },
+        function (response) {
+          //error function
+          $scope.message = "Error: " + response.status + " " + response.statusText;
+        }
+      );
 
-    $scope.select = function (setTab) {
-      $scope.tab = setTab;
+      $scope.select = function (setTab) {
+        $scope.tab = setTab;
 
-      if (setTab === 2) {
-        $scope.filtText = 'appetizer';
-      }
-      else if (setTab === 3) {
-        $scope.filtText = 'mains';
-      }
-      else if (setTab === 4) {
-        $scope.filtText = 'dessert';
-      }
-      else {
-        $scope.filtText = '';
-      }
-    };
-    $scope.isSelected = function (checkTab) {
-      return ($scope.tab === checkTab);
-    };
+        if (setTab === 2) {
+          $scope.filtText = 'appetizer';
+        }
+        else if (setTab === 3) {
+          $scope.filtText = 'mains';
+        }
+        else if (setTab === 4) {
+          $scope.filtText = 'dessert';
+        }
+        else {
+          $scope.filtText = '';
+        }
+      };
+      $scope.isSelected = function (checkTab) {
+        return ($scope.tab === checkTab);
+      };
 
-  }])
+      $scope.addFavorite = function (index) {
+        console.log("Index is ", index);
+        favoriteFactory.addToFavorites(index);
+        $ionicListDelegate.closeOptionButtons();
+        var favorites_current = favoriteFactory.getFavorites();
+        console.log(favorites_current);
+      };
+
+    }])
   .controller('ContactController', ['$scope', function ($scope) {
     $scope.feedback = {
       mychannel: "",
