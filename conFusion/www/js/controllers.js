@@ -412,4 +412,17 @@ angular.module('conFusion.controllers', [])
         $scope.shouldShowDelete = false;
       };
 
-    }]);
+    }])
+  .filter('favoriteFilter', function () {
+    return function (dishes, favorites) {
+      var out = [];
+      for (var i = 0; i < favorites.length; ++i) {
+        for (var j = 0; j < dishes.length; ++j) {
+          if (favorites[i].id == dishes[j].id) {
+            out.push(dishes[j]);
+          }
+        }
+      }
+      return out;
+    }
+  });

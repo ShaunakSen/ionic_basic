@@ -953,9 +953,53 @@ $scope.dishes = menuFactory.getDishes().query(
 
 Now for the filter
 
+<ion-item ng-repeat="dish in dishes | favoriteFilter: favorites"
+
+Note that favorites is an object array defined in FavoritesController
+
+favoriteFilter takes in as a parameter favorites object array
+
+After FavoritesController:
+
+.filter('favoriteFilter', function () {
+
+});
 
 
+This function actually returns a function which acts as a filter. This is how
+Angular implements filters
 
+.filter('favoriteFilter', function () {
+    return function (dishes, favorites) {
+
+    }
+  });
+
+1st param: array over which u wanna do the filtering
+2nd param: array which u pass
+
+.filter('favoriteFilter', function () {
+  return function (dishes, favorites) {
+    var out = [];
+    for (var i = 0; i < favorites.length; ++i) {
+      for (var j = 0; j < dishes.length; ++j) {
+        if (favorites[i].id == dishes[j].id) {
+          out.push(dishes[j]);
+        }
+      }
+    }
+    return out;
+  }
+});
+
+Finally out array contains favorites only
+
+
+Now in sidebar.html
+
+<ion-item menu-close href="#/app/favorites">
+  My Favorites
+</ion-item>
 
 
 
