@@ -194,8 +194,9 @@ angular.module('conFusion.controllers', [])
     }
 
   }])
-  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover',
-    function ($scope, $stateParams, menuFactory, favoriteFactory, baseURL, $ionicPopover) {
+  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory', 'favoriteFactory',
+    'baseURL', '$ionicPopover', '$ionicModal',
+    function ($scope, $stateParams, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal) {
 
       $scope.baseURL = baseURL;
       $scope.search = '';
@@ -203,6 +204,41 @@ angular.module('conFusion.controllers', [])
       $scope.showDish = false;
       $scope.message = "Loading...";
 
+      // MODAL CODE
+      $ionicModal.fromTemplateUrl('templates/dish-comment.html',{
+        scope: $scope
+      }).then(function (modal) {
+        $scope.commentForm = modal;
+      });
+
+      $scope.showCommentForm = function () {
+        $scope.closePopover();
+        $scope.commentForm.show();
+      };
+      $scope.hideCommentForm = function () {
+        $scope.commentForm.hide();
+      };
+
+      // CODE TO HANDLE COMMENTS
+      $scope.comments = {
+        name: "",
+        rating: 5,
+        comment: "",
+        date: ""
+      };
+
+      $scope.addComment = function () {
+        $scope.comments.date = new Date().toISOString();
+        $scope.comments.rating = parseInt($scope.comments.rating);
+        console.log($scope.comments);
+        $scope.dish.comments.push($scope.comments);
+
+        menuFactory.getDishes().update({id: $scope.dish.id}, $scope.dish);
+        $scope.hideCommentForm();
+      };
+
+
+      // POPOVER CODE
       $ionicPopover.fromTemplateUrl('templates/popover.html',{
         scope: $scope
       }).then(function (popover) {

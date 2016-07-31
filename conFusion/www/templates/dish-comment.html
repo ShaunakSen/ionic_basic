@@ -1,0 +1,31 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Submit Comments</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="hideCommentForm()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <!--FORM GOES HERE-->
+    <form id="reserveForm" name="reserveForm" ng-submit="addComment()">
+      <div class="list">
+        <label class="item item-input item-select">
+          <span class="input-label">Ratings</span>
+          <select ng-model="comments.ratings">
+            <option ng-repeat="n in [1,2,3,4,5]" value="{{n}}">{{n}}</option>
+          </select>
+        </label>
+        <label class="item item-input">
+          <input type="text" placeholder="Name" ng-model="comments.name">
+        </label>
+        <label class="item item-input">
+          <textarea placeholder="Comments" ng-model="comments.comment"></textarea>
+        </label>
+        <label class="item">
+          <button class="button button-block button-calm" type="submit">Submit Comment</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>
+
