@@ -194,14 +194,36 @@ angular.module('conFusion.controllers', [])
     }
 
   }])
-  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL',
-    function ($scope, $stateParams, menuFactory, baseURL) {
+  .controller('dishDetailController', ['$scope', '$stateParams', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover',
+    function ($scope, $stateParams, menuFactory, favoriteFactory, baseURL, $ionicPopover) {
 
       $scope.baseURL = baseURL;
       $scope.search = '';
       $scope.dish = {};
       $scope.showDish = false;
       $scope.message = "Loading...";
+
+      $ionicPopover.fromTemplateUrl('templates/popover.html',{
+        scope: $scope
+      }).then(function (popover) {
+        $scope.popover = popover;
+      });
+
+      $scope.openPopover = function ($event) {
+        $scope.popover.show($event);
+      };
+      $scope.closePopover = function () {
+        $scope.popover.hide();
+      };
+
+      $scope.addFavorite = function (index) {
+        console.log("Index is ", index);
+        favoriteFactory.addToFavorites(index);
+        $scope.closePopover();
+        var favorites_current = favoriteFactory.getFavorites();
+        console.log(favorites_current);
+      };
+
 
       /*menuFactory.getDish(parseInt($stateParams.id, 10)).then(
        function (response) {
@@ -217,6 +239,7 @@ angular.module('conFusion.controllers', [])
         function (response) {
           $scope.dish = response;
           $scope.showDish = true;
+          console.log()
         },
         function (response) {
           $scope.message = "Error: " + response.status + " " + response.statusText;
