@@ -1229,6 +1229,59 @@ run(function ($ionicPlatform, $rootScope, $ionicLoading){
 ...
 }
 
+Using Local Storage
+_______________________
+
+
+window.localStorage['key'] = value
+
+Only stores strings
+How to store JS objects?
+Convert to JSON
+
+After retrieval convert back to JS Object
+
+We will build a factory for this purpose
+
+In services.js:
+
+.factory('$localStorage', ['$window', function ($window) {
+  return {
+    store: function (key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function (key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    storeObject: function (key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function (key, defaultValue) {
+      return JSON.parse($window.localStorage[key]) || defaultValue;
+    }
+  }
+}]);
+
+While storing objects localStorage only supports strings
+So we need JSON.stringify
+
+We want to use localStorage to store username and password while login
+
+In ApCtrl: inject $localStorage
+
+We had $scope.loginData = {};
+So initially loginData is empty object
+
+Now we want to check if loginData is in our localStorage or not
+
+$scope.loginData = $localStorage.getObject('userinfo', {});
+
+If the key userinfo does not exist in localStorage {} will be returned
+
+There was a doLogin() function
+Here we want to push the data into localStorage
+
+
 
 
 
