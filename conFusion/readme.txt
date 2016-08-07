@@ -1198,6 +1198,39 @@ Now in dishDetailController inject dish
 and $scope.dish = dish;
 
 
+Angular $scope and Events
+____________________________________
+
+
+$scope.$emit : Fires an event up the $scope ie to its parents
+$scope.$broadcast : Fires an event down the $scope ie to its children
+$scope.$on: listen for the events
+
+$rootScope is parent for all the scopes
+
+$rootScope.$emit fires event for all $rootScope.$on listeners only
+$rootScope.$broadcast reaches all $rootScope.$on listeners and $scope.$on listeners
+
+
+UI-Router events:
+
+$stateChangeStart - begins change of state
+$stateNotFound
+$stateChangeSuccess
+$stateChangeError
+
+We want to use these to display a loading msg when state change occurs
+
+Now we want to show loading msg whenever our app is transitioning from one state to another
+
+in app.js in run()
+
+run(function ($ionicPlatform, $rootScope, $ionicLoading){
+...
+}
+
+
+
 
 
 

@@ -394,7 +394,7 @@ angular.module('conFusion.controllers', [])
       $scope.showDish = false;
       $scope.showLeader = false;
       $scope.message = "Loading...";
-      $scope.promotions = promotionFactory.get();
+      $scope.promotion = promotionFactory.get({id:0});
 
 
       /*menuFactory.getDish(0).then(function (response) {
