@@ -1126,6 +1126,77 @@ We create a separate factory to handle the promotions data
 
 Fixing controllers:
 
+In MenuController
+
+
+$scope.dishes = menuFactory.query(function (response) {
+  $scope.dishes = response;
+  $scope.showMenu = true;
+}, function (response) {
+  $scope.message = "Error: " + response.status + " " + response.statusText;
+});
+
+Similarly we make this change to every controller which used menuFactory.
+
+In IndexController:
+
+$scope.promotions = promotionFactory.get();
+
+
+Updating app.js to use resolve:
+
+In favorites state:
+
+If we see FavoritesController it has async code to load in both dishes from menuFactory and
+favorites from favoriteFactory
+
+resolve: {
+  dishes: [],
+  favorites: []
+}
+
+This will be the structure
+
+resolve: {
+  dishes: ['menuFactory', function (menuFactory) {
+    return menuFactory.query();
+  }],
+  favorites: ['favoriteFactory', function (favoriteFactory) {
+    return favoriteFactory.getFavorites()
+  }]
+}
+
+Now we simply need to inject these dishes and favorites into controller
+
+In FavoritesController
+
+Instead of menuFactory inject dishes
+We still need favoriteFactory for deletion so dont remove that
+Inject favorites
+And simply:
+
+$scope.favorites = favorites;
+$scope.dishes = dishes;
+
+Also we need to remove loading msg
+
+
+Now we modify dishdetails state
+
+Here in dishDetailController $scope.dish = menuFactory.get({id: parseInt($stateParams.id, 10)}).$promise.then(..
+so $stateParams is used
+
+We have to take this into account while writing our resolve code
+
+resolve: {
+  dish : ['$stateParams', 'menuFactory', function ($stateParams, menuFactory) {
+    return menuFactory.get({id: parseInt($stateParams.id, 10)});
+  }]
+}
+
+Now in dishDetailController inject dish
+and $scope.dish = dish;
+
 
 
 
