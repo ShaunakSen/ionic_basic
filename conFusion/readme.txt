@@ -1082,8 +1082,51 @@ We simulate delay using $timeout
 
 3.
 <ion-item ng-repeat="dish in dishes | favoriteFilter: favorites"
-  on-swipe-left="deleteFavorite(dish.id)"
-  href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
+on-swipe-left="deleteFavorite(dish.id)"
+href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
+
+
+Angular ui-router and resolve
+_____________________________________
+
+
+Whenever we accessed resources through the services we used .then() to resolve the promise
+But we can do better
+
+This data resolution can be done better
+
+We take help of Resolve object which is available on each state of ui-router
+
+Resolve Object consists of key value pairs:
+key: name of resolved dependency that we can inject into controller
+value: function that returns value of the dependency
+
+Before moving from one state to another resolution needs to be done
+
+So this ensures when we go to a new state the data is directly available for the controller
+to use it
+
+
+In services.js
+________________
+
+menuFactory is a service.. Turn this into a factory
+
+menFactory currently returns dishes as well as promotions
+
+We create a separate factory to handle the promotions data
+
+.factory('menuFactory', ['$http', '$resource', 'baseURL', function ($http, $resource, baseURL) {
+  return $resource(baseURL + "dishes/:id", null, {'update': {method: 'PUT'}});
+}])
+.factory('promotionFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+  return $resource(baseURL + "promotions/:id", null);
+}])
+
+
+Fixing controllers:
+
+
 
 
 

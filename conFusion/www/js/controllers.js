@@ -95,18 +95,25 @@ angular.module('conFusion.controllers', [])
        $scope.message = "Error: " + response.status + " " + response.statusText;
        }
        );*/
+      // CODE FOR ACCESSING MENUFACTORY SERVICE WHICH HAS BEEN CHANGED TO A FACTORY
+      /*$scope.dishes = menuFactory.getDishes().query(
+       function (response) {
+       //success function
+       $scope.dishes = response;
+       $scope.showMenu = true;
+       },
+       function (response) {
+       //error function
+       $scope.message = "Error: " + response.status + " " + response.statusText;
+       }
+       );*/
 
-      $scope.dishes = menuFactory.getDishes().query(
-        function (response) {
-          //success function
-          $scope.dishes = response;
-          $scope.showMenu = true;
-        },
-        function (response) {
-          //error function
-          $scope.message = "Error: " + response.status + " " + response.statusText;
-        }
-      );
+      $scope.dishes = menuFactory.query(function (response) {
+        $scope.dishes = response;
+        $scope.showMenu = true;
+      }, function (response) {
+        $scope.message = "Error: " + response.status + " " + response.statusText;
+      });
 
       $scope.select = function (setTab) {
         $scope.tab = setTab;
@@ -205,7 +212,7 @@ angular.module('conFusion.controllers', [])
       $scope.message = "Loading...";
 
       // MODAL CODE
-      $ionicModal.fromTemplateUrl('templates/dish-comment.html',{
+      $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
         scope: $scope
       }).then(function (modal) {
         $scope.commentForm = modal;
@@ -221,7 +228,7 @@ angular.module('conFusion.controllers', [])
 
       // CODE TO HANDLE COMMENTS
       $scope.comments = {
-        name: "",
+        author: "",
         rating: 5,
         comment: "",
         date: ""
@@ -233,13 +240,13 @@ angular.module('conFusion.controllers', [])
         console.log($scope.comments);
         $scope.dish.comments.push($scope.comments);
 
-        menuFactory.getDishes().update({id: $scope.dish.id}, $scope.dish);
+        menuFactory.update({id: $scope.dish.id}, $scope.dish);
         $scope.hideCommentForm();
       };
 
 
       // POPOVER CODE
-      $ionicPopover.fromTemplateUrl('templates/popover.html',{
+      $ionicPopover.fromTemplateUrl('templates/popover.html', {
         scope: $scope
       }).then(function (popover) {
         $scope.popover = popover;
@@ -271,7 +278,7 @@ angular.module('conFusion.controllers', [])
        }
        );*/
 
-      $scope.dish = menuFactory.getDishes().get({id: parseInt($stateParams.id, 10)}).$promise.then(
+      $scope.dish = menuFactory.get({id: parseInt($stateParams.id, 10)}).$promise.then(
         function (response) {
           $scope.dish = response;
           $scope.showDish = true;
@@ -374,8 +381,8 @@ angular.module('conFusion.controllers', [])
 
 
   }])
-  .controller('IndexController', ['$scope', 'baseURL', 'menuFactory', 'corporateFactory',
-    function ($scope, baseURL, menuFactory, corporateFactory) {
+  .controller('IndexController', ['$scope', 'baseURL', 'menuFactory', 'promotionFactory', 'corporateFactory',
+    function ($scope, baseURL, menuFactory, promotionFactory, corporateFactory) {
 
       /*$scope.dish = {};*/
       $scope.baseURL = baseURL;
@@ -383,18 +390,8 @@ angular.module('conFusion.controllers', [])
       $scope.showDish = false;
       $scope.showLeader = false;
       $scope.message = "Loading...";
-      $scope.promotions = menuFactory.getPromotions().query(
-        function (response) {
-          //success function
-          $scope.showPromotion = true;
-          $scope.promotions = response
-
-        },
-        function (response) {
-          //error function
-          $scope.message = "Error: " + response.status + " " + response.statusText;
-        }
-      );
+      $scope.promotions = promotionFactory.get();
+        
 
       /*menuFactory.getDish(0).then(function (response) {
        $scope.dish = response.data;
@@ -405,7 +402,7 @@ angular.module('conFusion.controllers', [])
        }
        );*/
 
-      $scope.dish = menuFactory.getDishes().get({id: 0})
+      $scope.dish = menuFactory.get({id: 0})
         .$promise.then(function (response) {
             $scope.dish = response;
             $scope.showDish = true;
@@ -457,7 +454,7 @@ angular.module('conFusion.controllers', [])
 
       // FETCH LIST OF DISHES
 
-      $scope.dishes = menuFactory.getDishes().query(
+      $scope.dishes = menuFactory.query(
         function (response) {
           //success function
           $scope.dishes = response;
@@ -485,7 +482,7 @@ angular.module('conFusion.controllers', [])
         });
 
         confirmPopup.then(function (res) {
-          if(res){
+          if (res) {
             favoriteFactory.deleteFromFavorites(index);
           }
         });
